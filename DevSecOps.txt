@@ -1,2 +1,2 @@
 Stage 1: User --> Git commit  
-Stage 2: 
+Stage 2: Commit --> Execute Pipeline 
