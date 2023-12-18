@@ -1,1 +1,2 @@
 Stage 1: User --> Git commit  
+Stage 2: 
