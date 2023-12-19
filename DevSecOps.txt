@@ -1,3 +1,3 @@
 Stage 1: User --> Git commit  
 Stage 2: Commit --> Execute Pipeline 
-Stage 3: Pipeline --> [ SAST - Semgrep,Secret-Scanning ], [SCA - snyk], [Container - Trivy], [DAST - Burp].
+Stage 3: Pipeline --> [ SAST - Semgrep,Secret-Scanning ], [SCA - snyk], [Container - Trivy], [DAST - Burp]
