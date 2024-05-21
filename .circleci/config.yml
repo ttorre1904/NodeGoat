@@ -23,9 +23,6 @@ jobs:
           command: snyk auth $SNYK_TOKEN
       - run:
           name: Check Snyk Version
-          command: snyk --version
-      - run:
-          name: Check Snyk Version
           command: snyk code test 
 
       - run: echo "hello world" # Run the `echo` command
