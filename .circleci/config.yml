@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  hello-job:
+  snyk-scan:
     machine:
       image: ubuntu-2004:202008-01
     steps:
@@ -25,9 +25,7 @@ jobs:
           name: Check Snyk Version
           command: snyk code test 
 
-      - run: echo "hello world" # Run the `echo` command
-
 workflows:
   my-workflow:
     jobs:
-      - hello-job
+      - snyk-scan
