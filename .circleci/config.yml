@@ -40,7 +40,7 @@ jobs:
           command: snyk-to-html -i results-code.json -o results-code.html
       - run:
           name: Save artifacts
-          command: mkdir -p /tmp/artifacts && cp snyk-report.html /tmp/artifacts/
+          command: mkdir -p /tmp/artifacts && cp results-code.html /tmp/artifacts/ && cp results-code.json /tmp/artifacts/
       - store_artifacts:
           path: /tmp/artifacts
           destination: artifacts
