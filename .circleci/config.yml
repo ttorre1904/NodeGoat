@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   snyk-scan:
     machine:
-      image: ubuntu-minimal:latest
+      image: ubuntu-2204:2024.04.4
     steps:
       - checkout # Check out the code in the project directory
       - run:
