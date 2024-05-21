@@ -2,10 +2,10 @@ version: 2.1
 
 jobs:
   snyk-scan:
+  build:
     machine:
       image: ubuntu-2204:2024.04.4
-    build:
-      working_directory: /tmp  
+    working_directory: /tmp
     steps:
       - checkout # Check out the code in the project directory
       - run:
@@ -39,10 +39,10 @@ jobs:
           command: snyk code test --json-file-output=results-code.json
       - run:
           name: Convert Snyk Report to HTML
-          command: snyk-to-html -i results-code.json -o results-code.html
+          command: snyk-to-html -i results-code.json -o /tmp/results-code.html
       - store_artifacts:
-          path: results-code.html
-          destination: artifacts
+          path: /tmp/results-code.html
+          destination: artifact-file
 workflows:
   my-workflow:
     jobs:
