@@ -23,7 +23,7 @@ jobs:
           command: snyk auth $SNYK_TOKEN
       - run:
           name: Install snyk-to-html
-          command: sudo npm install -g snyk-to-html
+          command: npm install snyk-to-html -g
       - run:
           name: Generate Snyk Report
           command: snyk test --json > snyk-report.json
