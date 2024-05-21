@@ -5,7 +5,6 @@ jobs:
   build:
     machine:
       image: ubuntu-2204:2024.04.4
-    working_directory: /tmp
     steps:
       - checkout # Check out the code in the project directory
       - run:
