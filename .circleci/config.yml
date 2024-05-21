@@ -21,7 +21,6 @@ jobs:
           name: Install npm@latest
           command: npm install -g npm@latest
       - run:
-      - run:
           name: Install Snyk
           command: |
             curl --compressed https://static.snyk.io/cli/latest/snyk-linux -o snyk
