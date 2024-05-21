@@ -26,10 +26,10 @@ jobs:
           command: npm install snyk-to-html -g
       - run:
           name: Generate Snyk Report
-          command: snyk test --json > snyk-report.json
+          command: snyk code test --json-file-output=results-code.json
       - run:
           name: Convert Snyk Report to HTML
-          command: snyk-to-html -i snyk-report.json -o snyk-report.html
+          command: snyk-to-html -i results-code.json -o results-code.html
       - run:
           name: Save artifacts
           command: mkdir -p /tmp/artifacts && cp snyk-report.html /tmp/artifacts/
