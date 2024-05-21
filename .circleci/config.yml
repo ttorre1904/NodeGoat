@@ -37,7 +37,7 @@ jobs:
           command: snyk code test --json-file-output=results-code.json
       - run:
           name: Convert Snyk Report to HTML
-          command: snyk-to-html -i results-code.json -o /tmp/results-code.html
+          command: snyk-to-html -i results-code.json -o /tmp/results-code.html || touch /tmp/results-code.html
       - store_artifacts:
           path: /tmp/results-code.html
           destination: artifact-file
