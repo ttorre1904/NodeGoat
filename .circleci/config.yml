@@ -7,11 +7,20 @@ jobs:
     steps:
       - checkout # Check out the code in the project directory
       - run:
-          name: Install Node.js and npm
+          name: Install nvm and Node.js
           command: |
-            sudo apt-get update
-            sudo apt-get install -y nodejs npm
-            sudo npm install -g npm@latest
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install 18.17.0
+            nvm use 18.17.0
+            nvm alias default 18.17.0
+            node -v
+            npm -v
+      - run:
+          name: Install npm@latest
+          command: npm install -g npm@latest
+      - run:
       - run:
           name: Install Snyk
           command: |
