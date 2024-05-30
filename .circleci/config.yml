@@ -41,4 +41,4 @@ workflows:
           requires:
             - build-docker-image
           environment:
-            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+            SNYK_TOKEN: $SNYK_TOKEN
