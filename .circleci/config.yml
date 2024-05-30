@@ -1,0 +1,45 @@
+version: 2.1
+orbs:
+  snyk: snyk/snyk@1.1.2
+
+jobs:
+  build-docker-image-and-snyk-scan:
+    docker:
+      - image: << parameters.docker_base_image >>
+    environment:
+      DOCKER_IMAGE: nodegoat
+    steps:
+      - checkout
+      - run:
+          name: Extract Dockerfile base image version
+          command: |
+            base_image_version=$(awk '/^FROM node:/ {print $2}' Dockerfile | cut -d ':' -f2)
+            if [ -n "$base_image_version" ]; then
+              echo "Using base image version: cimg/node:$base_image_version"
+              echo "docker_base_image=cimg/node:$base_image_version" >> $BASH_ENV
+            else
+              echo "Base image version not found in Dockerfile. Using default."
+              echo "docker_base_image=cimg/node:12.22" >> $BASH_ENV
+            fi
+      - run:
+          name: Install Snyk CLI
+          command: npm install -g snyk
+      - run:
+          name: Install Snyk to HTML
+          command: npm install --prefix=$HOME/.local -g snyk-to-html
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -t $DOCKER_IMAGE:latest .
+            snyk container test $DOCKER_IMAGE:latest  --json | snyk-to-html -o results-container.html
+      - store_artifacts:
+          path: results-container.html
+
+workflows:
+  build-test-snyk:
+    jobs:
+      - build-docker-image-and-snyk-scan:
+          parameters:
+            docker_base_image: << parameters.docker_base_image >>
