@@ -40,8 +40,4 @@ jobs:
 workflows:
   build-test-snyk:
     jobs:
-      - build-docker-image-and-snyk-scan:
-          parameters:
-            docker_base_image:
-              description: "The base Docker image to use"
-              default: cimg/node:12.22
+      - build-docker-image-and-snyk-scan
