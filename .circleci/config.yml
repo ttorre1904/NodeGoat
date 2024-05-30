@@ -3,11 +3,9 @@ orbs:
   snyk: snyk/snyk@1.1.2
 
 jobs:
-  build-docker-image-and-snyk-scan:
+  extract-docker-base-image:
     docker:
-      - image: << parameters.docker_base_image >>
-    environment:
-      DOCKER_IMAGE: nodegoat
+      - image: cimg/node:12.22  # Use the same base image as the main job
     steps:
       - checkout
       - run:
@@ -16,11 +14,19 @@ jobs:
             base_image_version=$(awk '/^FROM node:/ {print $2}' Dockerfile | cut -d ':' -f2)
             if [ -n "$base_image_version" ]; then
               echo "Using base image version: cimg/node:$base_image_version"
-              export DOCKER_BASE_IMAGE=cimg/node:$base_image_version
+              echo "DOCKER_BASE_IMAGE=cimg/node:$base_image_version" >> $BASH_ENV
             else
               echo "Base image version not found in Dockerfile. Using default."
-              export DOCKER_BASE_IMAGE=cimg/node:12.22
+              echo "DOCKER_BASE_IMAGE=cimg/node:12.22" >> $BASH_ENV
             fi
+
+  build-docker-image-and-snyk-scan:
+    docker:
+      - image: << pipeline.extract-docker-base-image.outputs.DOCKER_BASE_IMAGE >>
+    environment:
+      DOCKER_IMAGE: nodegoat
+    steps:
+      - checkout
       - run:
           name: Install Snyk CLI
           command: npm install -g snyk
@@ -40,5 +46,7 @@ jobs:
 workflows:
   build-test-snyk:
     jobs:
+      - extract-docker-base-image
       - build-docker-image-and-snyk-scan:
-          docker_base_image: cimg/node:12.22
+          requires:
+            - extract-docker-base-image
