@@ -15,7 +15,9 @@ jobs:
           command: npm install -g snyk
       - run:
           name: Install Snyk to HTML
-          command: npm install --prefix=$HOME/.local -g snyk-to-html    
+          command: npm install --prefix=$HOME/.local -g snyk-to-html
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
           name: Build Docker Image
           command: |
