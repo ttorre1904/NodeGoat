@@ -1,5 +1,5 @@
 version: 2.1
-orbs: 
+orbs:
   snyk: snyk/snyk@1.1.2
 
 jobs:
@@ -13,34 +13,25 @@ jobs:
       - setup_remote_docker:
           version: 20.10.7
       - run:
-          name: Install Snyk
-          command: npm install -g snyk
-      - run:
           name: Build Docker Image
           command: |
             docker build -t $DOCKER_IMAGE:latest .
-
-  snyk-container-scan:
-    docker:
-      - image: cimg/node:12.22  # Updated to Node.js 12
-    environment:
-      SNYK_TOKEN: $SNYK_TOKEN
-    steps:
-      - setup_remote_docker:
-          version: 20.10.7
       - run:
           name: Install Snyk to HTML
-          command: npm install -g snyk-to-html
+          command: npm install --prefix=$HOME/.local -g snyk-to-html
+      - snyk/scan:
+          monitor-on-build: false
+          fail-on-issues: false
+          command: container test $DOCKER_IMAGE:latest
+          additional-arguments: --json-file-output=code-results.json
       - run:
-          name: Run Snyk Container Scan
-          command: container test nodegoat:latest --json | snyk-to-html -o container-report.html
+          name: Generate Snyk HTML report
+          command: cat code-results.json | snyk-to-html -o code-report.html
       - store_artifacts:
-          path: container-report.html
+          path: code-report.html
 
 workflows:
   build-test-snyk:
     jobs:
       - build-docker-image
-      - snyk-container-scan:
-          requires:
-            - build-docker-image
+      - snyk-scan
