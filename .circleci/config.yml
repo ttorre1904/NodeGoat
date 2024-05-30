@@ -33,8 +33,7 @@ jobs:
           command: npm install -g snyk-to-html
       - run:
           name: Run Snyk Container Scan
-          command: |
-            snyk container test nodegoat:latest --json | snyk-to-html -o container-report.html
+          command: container test nodegoat:latest --json | snyk-to-html -o container-report.html
       - store_artifacts:
           path: container-report.html
 
