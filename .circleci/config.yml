@@ -19,6 +19,12 @@ jobs:
       - run:
           name: Install Snyk to HTML
           command: npm install --prefix=$HOME/.local -g snyk-to-html
+
+  snyk-scan:
+    docker:
+      - image: cimg/node:12.22  # Updated to Node.js 12
+    steps:
+      - checkout
       - snyk/scan:
           monitor-on-build: false
           fail-on-issues: false
@@ -34,4 +40,6 @@ workflows:
   build-test-snyk:
     jobs:
       - build-docker-image
-      - snyk-scan
+      - snyk-scan:
+          requires:
+            - build-docker-image
