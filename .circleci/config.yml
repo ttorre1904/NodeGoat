@@ -1,0 +1,44 @@
+version: 2.1
+orbs: 
+  snyk: snyk/snyk@1.1.2
+
+jobs:
+  build-docker-image:
+    docker:
+      - image: cimg/node:12.22  # Updated to Node.js 12
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -t $DOCKER_IMAGE:latest .
+
+  snyk-container-scan:
+    docker:
+      - image: cimg/node:12.22  # Updated to Node.js 12
+    steps:
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Install Snyk to HTML
+          command: npm install -g snyk-to-html
+      - run:
+          name: Run Snyk Container Scan
+          command: |
+            snyk container test $DOCKER_IMAGE:latest --json --all-projects --all-sub-projects --severity-threshold=medium --snyk-token=$SNYK_TOKEN | tee container-results.json | snyk-to-html -o container-report.html
+      - store_artifacts:
+          path: container-report.html
+
+workflows:
+  build-test-snyk:
+    jobs:
+      - build-docker-image:
+          environment:
+            DOCKER_IMAGE: nodegoat
+      - snyk-container-scan:
+          requires:
+            - build-docker-image
+          environment:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
