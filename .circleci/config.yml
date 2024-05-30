@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Run Snyk Container Scan
           command: |
-            snyk container test nodegoat:latest --json --all-projects --all-sub-projects --severity-threshold=medium --snyk-token=$SNYK_TOKEN | tee container-results.json | snyk-to-html -o container-report.html
+            snyk container test nodegoat:latest --json | snyk-to-html -o container-report.html
       - store_artifacts:
           path: container-report.html
 
