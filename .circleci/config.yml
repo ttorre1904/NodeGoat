@@ -22,12 +22,9 @@ jobs:
           name: Build Docker Image
           command: |
             docker build -t $DOCKER_IMAGE:latest .
-            snyk container test $DOCKER_IMAGE:latest  --json | tee snyk-results.json
-      - run:
-          name: Generate Snyk HTML report
-          command: cat snyk-results.json | snyk-to-html -o snyk-report.html
+            snyk container test $DOCKER_IMAGE:latest  --json | snyk-to-html -o results-container.html
       - store_artifacts:
-          path: snyk-report.html
+          path: results-container.html
 
 workflows:
   build-test-snyk:
