@@ -84,10 +84,10 @@ jobs:
           command: npm install --prefix=$HOME/.local -g snyk-to-html
       - run:
           name: Build Docker Image
-          command: docker build -t $DOCKER_IMAGE:latest .
+          command: docker build -t nodegoat:latest .
       - run:
           name: Run Container Scan
-          command: snyk container test $DOCKER_IMAGE:latest --json > container-results.json
+          command: snyk container test nodegoat:latest --json > container-results.json
       - run:
           name: Generate Snyk HTML report
           command: cat container-results.json | snyk-to-html -o results-container.html
