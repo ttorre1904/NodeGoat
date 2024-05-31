@@ -11,105 +11,113 @@ jobs:
       - image: cimg/node:12.22
     steps:
       - checkout
-      - code_scan_steps
+      - install_snyk_html
+      - snyk/code_scan
+      - generate_snyk_report
+      - store_artifacts:
+          path: code-report.html
 
   sca_scan:
     docker:
       - image: cimg/node:12.22
     steps:
       - checkout
-      - sca_scan_steps
+      - install_snyk_html
+      - snyk/sca_scan
+      - generate_snyk_report
+      - store_artifacts:
+          path: dependency-report.html
 
   secret_scan:
     machine:
       image: ubuntu-2204:2024.04.4
     steps:
       - checkout
-      - secret_scan_steps
+      - install_git_make
+      - clone_build_gitleaks
+      - run_gitleaks_scan
+      - store_artifacts:
+          path: git.csv
+          destination: git-leaks-reports
 
   container_scan:
     docker:
       - image: cimg/node:12.22
     steps:
       - checkout
-      - container_scan_steps
+      - install_snyk_cli
+      - install_snyk_html
+      - build_docker_image
+      - snyk/container_scan
+      - generate_snyk_report
+      - store_artifacts:
+          path: results-container.html
 
-# Define reusable steps for each scan type
-defaults: &defaults
-  steps:
-    - checkout
+# Define reusable steps
+steps:
+  install_snyk_cli:
+    run:
+      name: Install Snyk CLI
+      command: npm install -g snyk
 
-  # Example steps for code scan
-  code_scan_steps:
-    - run:
-        name: Install Snyk to HTML
-        command: npm install --prefix=$HOME/.local -g snyk-to-html
-    - snyk/scan:
-        monitor-on-build: false
-        fail-on-issues: false
-        command: code test
-        additional-arguments: --json-file-output=code-results.json
-    - run:
-        name: Generate Snyk HTML report
-        command: cat code-results.json | snyk-to-html -o code-report.html
-    - store_artifacts:
-        path: code-report.html
+  install_snyk_html:
+    run:
+      name: Install Snyk to HTML
+      command: npm install --prefix=$HOME/.local -g snyk-to-html
 
-  # Example steps for SCA scan
-  sca_scan_steps:
-    - run:
-        name: Install Snyk to HTML
-        command: npm install --prefix=$HOME/.local -g snyk-to-html
-    - snyk/scan:
-        monitor-on-build: false
-        fail-on-issues: false
-        command: test
-        additional-arguments: --json-file-output=dependency-results.json
-    - run:
-        name: Generate Snyk HTML report
-        command: cat dependency-results.json | snyk-to-html -o dependency-report.html
-    - store_artifacts:
-        path: dependency-report.html
+  install_git_make:
+    run:
+      name: Install Git and make
+      command: |
+        sudo apt-get update
+        sudo apt-get install -y git make
 
-  # Example steps for secret scan
-  secret_scan_steps:
-    - run:
-        name: Install Git and make
-        command: |
-          sudo apt-get update
-          sudo apt-get install -y git make
-    - run:
-        name: Clone GitLeaks and build
-        command: |
-          git clone https://github.com/gitleaks/gitleaks.git
-          cd gitleaks
-          make build
-    - run:
-        name: Run GitLeaks scan
-        command: |
-          cd gitleaks
-          ./gitleaks detect -v -f csv --report-path ../git.csv
-    - store_artifacts:
-        path: git.csv
-        destination: git-leaks-reports
+  clone_build_gitleaks:
+    run:
+      name: Clone GitLeaks and build
+      command: |
+        git clone https://github.com/gitleaks/gitleaks.git
+        cd gitleaks
+        make build
 
-  # Example steps for container scan
-  container_scan_steps:
-    - run:
-        name: Install Snyk CLI
-        command: npm install -g snyk
-    - run:
-        name: Install Snyk to HTML
-        command: npm install --prefix=$HOME/.local -g snyk-to-html
-    - setup_remote_docker:
-        version: 20.10.7
-    - run:
-        name: Build Docker Image
-        command: |
-          docker build -t $DOCKER_IMAGE:latest .
-          snyk container test $DOCKER_IMAGE:latest  --json | snyk-to-html -o results-container.html
-    - store_artifacts:
-        path: results-container.html
+  run_gitleaks_scan:
+    run:
+      name: Run GitLeaks scan
+      command: |
+        cd gitleaks
+        ./gitleaks detect -v -f csv --report-path ../git.csv
+
+  build_docker_image:
+    run:
+      name: Build Docker Image
+      command: |
+        docker build -t $DOCKER_IMAGE:latest .
+
+  snyk/code_scan:
+    run:
+      name: Run Code Scan
+      command: |
+        snyk test --all-projects --json-file-output=code-results.json
+
+  snyk/sca_scan:
+    run:
+      name: Run SCA Scan
+      command: |
+        snyk test --all-projects --json-file-output=dependency-results.json
+
+  snyk/container_scan:
+    run:
+      name: Run Container Scan
+      command: |
+        snyk container test $DOCKER_IMAGE:latest --json > container-results.json
+
+  generate_snyk_report:
+    run:
+      name: Generate Snyk HTML report
+      command: |
+        cat code-results.json | snyk-to-html -o code-report.html
+        cat dependency-results.json | snyk-to-html -o dependency-report.html
+        cat container-results.json | snyk-to-html -o results-container.html
 
 # Define workflows to execute different scans
 workflows:
