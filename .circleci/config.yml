@@ -19,7 +19,7 @@ jobs:
           command: npm install --prefix=$HOME/.local -g snyk-to-html
       - run:
           name: Run Code Scan
-          command: snyk code test code test --json | snyk-to-html -o code-report.html
+          command: snyk code test --json | snyk-to-html -o code-report.html
       - store_artifacts:
           path: code-report.html
           destination: code-report.html
