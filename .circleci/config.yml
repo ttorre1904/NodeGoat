@@ -1,55 +1,122 @@
 version: 2.1
 
+# Define reusable orbs
+orbs:
+  snyk: snyk/snyk@1.1.2
+
+# Define jobs for each scan type
+jobs:
+  code_scan:
+    docker:
+      - image: cimg/node:12.22
+    steps:
+      - checkout
+      - code_scan_steps
+
+  sca_scan:
+    docker:
+      - image: cimg/node:12.22
+    steps:
+      - checkout
+      - sca_scan_steps
+
+  secret_scan:
+    machine:
+      image: ubuntu-2204:2024.04.4
+    steps:
+      - checkout
+      - secret_scan_steps
+
+  container_scan:
+    docker:
+      - image: cimg/node:12.22
+    steps:
+      - checkout
+      - container_scan_steps
+
+# Define reusable steps for each scan type
+defaults: &defaults
+  steps:
+    - checkout
+
+  # Example steps for code scan
+  code_scan_steps:
+    - run:
+        name: Install Snyk to HTML
+        command: npm install --prefix=$HOME/.local -g snyk-to-html
+    - snyk/scan:
+        monitor-on-build: false
+        fail-on-issues: false
+        command: code test
+        additional-arguments: --json-file-output=code-results.json
+    - run:
+        name: Generate Snyk HTML report
+        command: cat code-results.json | snyk-to-html -o code-report.html
+    - store_artifacts:
+        path: code-report.html
+
+  # Example steps for SCA scan
+  sca_scan_steps:
+    - run:
+        name: Install Snyk to HTML
+        command: npm install --prefix=$HOME/.local -g snyk-to-html
+    - snyk/scan:
+        monitor-on-build: false
+        fail-on-issues: false
+        command: test
+        additional-arguments: --json-file-output=dependency-results.json
+    - run:
+        name: Generate Snyk HTML report
+        command: cat dependency-results.json | snyk-to-html -o dependency-report.html
+    - store_artifacts:
+        path: dependency-report.html
+
+  # Example steps for secret scan
+  secret_scan_steps:
+    - run:
+        name: Install Git and make
+        command: |
+          sudo apt-get update
+          sudo apt-get install -y git make
+    - run:
+        name: Clone GitLeaks and build
+        command: |
+          git clone https://github.com/gitleaks/gitleaks.git
+          cd gitleaks
+          make build
+    - run:
+        name: Run GitLeaks scan
+        command: |
+          cd gitleaks
+          ./gitleaks detect -v -f csv --report-path ../git.csv
+    - store_artifacts:
+        path: git.csv
+        destination: git-leaks-reports
+
+  # Example steps for container scan
+  container_scan_steps:
+    - run:
+        name: Install Snyk CLI
+        command: npm install -g snyk
+    - run:
+        name: Install Snyk to HTML
+        command: npm install --prefix=$HOME/.local -g snyk-to-html
+    - setup_remote_docker:
+        version: 20.10.7
+    - run:
+        name: Build Docker Image
+        command: |
+          docker build -t $DOCKER_IMAGE:latest .
+          snyk container test $DOCKER_IMAGE:latest  --json | snyk-to-html -o results-container.html
+    - store_artifacts:
+        path: results-container.html
+
+# Define workflows to execute different scans
 workflows:
   version: 2
   main_workflow:
     jobs:
       - code_scan
-      - sca
-      - container_scan
+      - sca_scan
       - secret_scan
-
-jobs:
-  code_scan:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Run Code Scan
-          command: |
-            circleci config process .circleci/code_scan_config.yml > .circleci/code_scan_processed.yml
-            circleci local execute -c .circleci/code_scan_processed.yml --job build
-
-  sca:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Run SCA
-          command: |
-            circleci config process .circleci/sca_config.yml > .circleci/sca_processed.yml
-            circleci local execute -c .circleci/sca_processed.yml --job build
-
-  container_scan:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Run Container Scan
-          command: |
-            circleci config process .circleci/container_config.yml > .circleci/container_processed.yml
-            circleci local execute -c .circleci/container_processed.yml --job build
-
-  secret_scan:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Run Secret Scan
-          command: |
-            circleci config process .circleci/secret_scan_config.yml > .circleci/secret_scan_processed.yml
-            circleci local execute -c .circleci/secret_scan_processed.yml --job build
+      - container_scan
