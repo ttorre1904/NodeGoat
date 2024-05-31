@@ -25,6 +25,10 @@ jobs:
           command: cat code-results.json | snyk-to-html -o code-report.html
       - store_artifacts:
           path: code-report.html
+          destination: code-report.html
+      - store_artifacts:
+          path: code-results.json
+          destination: code-results.json
 
   sca_scan:
     docker:
@@ -45,6 +49,10 @@ jobs:
           command: cat dependency-results.json | snyk-to-html -o dependency-report.html
       - store_artifacts:
           path: dependency-report.html
+          destination: dependency-report.html
+      - store_artifacts:
+          path: dependency-results.json
+          destination: dependency-results.json
 
   secret_scan:
     machine:
@@ -93,6 +101,10 @@ jobs:
           command: cat container-results.json | snyk-to-html -o results-container.html
       - store_artifacts:
           path: results-container.html
+          destination: results-container.html
+      - store_artifacts:
+          path: container-results.json
+          destination: container-results.json
 
 # Define workflows to execute different scans
 workflows:
