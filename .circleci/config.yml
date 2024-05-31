@@ -51,8 +51,8 @@ jobs:
           path: dependency-report.html
           destination: dependency-report.html
       - store_artifacts:
-          path: dependency-results.json
-          destination: dependency-results.json
+          path: dependency-report.html
+          destination: dependency-report.html
 
   secret_scan:
     machine:
@@ -84,6 +84,8 @@ jobs:
       - image: cimg/node:12.22
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
           name: Install Snyk CLI
           command: npm install -g snyk
@@ -103,8 +105,8 @@ jobs:
           path: results-container.html
           destination: results-container.html
       - store_artifacts:
-          path: container-results.json
-          destination: container-results.json
+          path: results-container.html
+          destination: results-container.html
 
 # Define workflows to execute different scans
 workflows:
