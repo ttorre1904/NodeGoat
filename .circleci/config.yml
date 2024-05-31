@@ -1,0 +1,42 @@
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2204:2024.04.4
+
+    steps:
+      - checkout
+
+      # Install Git and required dependencies
+      - run:
+          name: Install Git and make
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y git make
+
+      # Clone GitLeaks repository and build
+      - run:
+          name: Clone GitLeaks and build
+          command: |
+            git clone https://github.com/gitleaks/gitleaks.git
+            cd gitleaks
+            make build
+
+      # Run GitLeaks scan
+      - run:
+          name: Run GitLeaks scan
+          command: |
+            cd gitleaks
+            ./gitleaks detect -v -f csv --report-path ../git.csv
+
+      # Save artifacts
+      - store_artifacts:
+          path: git.csv
+          destination: git-leaks-reports
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
