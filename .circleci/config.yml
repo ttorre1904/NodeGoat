@@ -11,6 +11,7 @@ jobs:
       - image: cimg/node:12.22
     steps:
       - checkout
+      - install_snyk_cli
       - install_snyk_html
       - snyk/code_scan
       - generate_snyk_report
@@ -22,6 +23,7 @@ jobs:
       - image: cimg/node:12.22
     steps:
       - checkout
+      - install_snyk_cli
       - install_snyk_html
       - snyk/sca_scan
       - generate_snyk_report
