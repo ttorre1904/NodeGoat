@@ -1,0 +1,55 @@
+version: 2.1
+
+workflows:
+  version: 2
+  main_workflow:
+    jobs:
+      - code_scan
+      - sca
+      - container_scan
+      - secret_scan
+
+jobs:
+  code_scan:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Run Code Scan
+          command: |
+            circleci config validate -c .circleci/code_scan_config.yml
+            circleci local execute -c .circleci/code_scan_config.yml --job build
+
+  sca:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Run SCA
+          command: |
+            circleci config validate -c .circleci/sca_config.yml
+            circleci local execute -c .circleci/sca_config.yml --job build
+
+  container_scan:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Run Container Scan
+          command: |
+            circleci config validate -c .circleci/container_config.yml
+            circleci local execute -c .circleci/container_config.yml --job build
+
+  secret_scan:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Run Secret Scan
+          command: |
+            circleci config validate -c .circleci/secret_scan_config.yml
+            circleci local execute -c .circleci/secret_scan_config.yml --job build
