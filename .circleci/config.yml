@@ -18,8 +18,8 @@ jobs:
       - run:
           name: Run Code Scan
           command: |
-            circleci config validate -c .circleci/code_scan_config.yml
-            circleci local execute -c .circleci/code_scan_config.yml --job build
+            circleci config process .circleci/code_scan_config.yml > .circleci/code_scan_processed.yml
+            circleci local execute -c .circleci/code_scan_processed.yml --job build
 
   sca:
     docker:
@@ -29,8 +29,8 @@ jobs:
       - run:
           name: Run SCA
           command: |
-            circleci config validate -c .circleci/sca_config.yml
-            circleci local execute -c .circleci/sca_config.yml --job build
+            circleci config process .circleci/sca_config.yml > .circleci/sca_processed.yml
+            circleci local execute -c .circleci/sca_processed.yml --job build
 
   container_scan:
     docker:
@@ -40,8 +40,8 @@ jobs:
       - run:
           name: Run Container Scan
           command: |
-            circleci config validate -c .circleci/container_config.yml
-            circleci local execute -c .circleci/container_config.yml --job build
+            circleci config process .circleci/container_config.yml > .circleci/container_processed.yml
+            circleci local execute -c .circleci/container_processed.yml --job build
 
   secret_scan:
     docker:
@@ -51,5 +51,5 @@ jobs:
       - run:
           name: Run Secret Scan
           command: |
-            circleci config validate -c .circleci/secret_scan_config.yml
-            circleci local execute -c .circleci/secret_scan_config.yml --job build
+            circleci config process .circleci/secret_scan_config.yml > .circleci/secret_scan_processed.yml
+            circleci local execute -c .circleci/secret_scan_processed.yml --job build
