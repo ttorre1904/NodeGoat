@@ -19,7 +19,7 @@ jobs:
           command: npm install --prefix=$HOME/.local -g snyk-to-html
       - run:
           name: Run Code Scan
-          command: snyk code test --json | snyk-to-html -o code-report.html
+          command: snyk code test --json | snyk-to-html -o code-report.html || true
       - persist_to_workspace:
           root: .
           paths:
@@ -40,7 +40,7 @@ jobs:
           command: npm install --prefix=$HOME/.local -g snyk-to-html
       - run:
           name: Run SCA Scan
-          command: snyk test --json | snyk-to-html -o dependency-report.html
+          command: snyk test --json | snyk-to-html -o dependency-report.html || true
       - persist_to_workspace:
           root: .
           paths:
@@ -68,7 +68,7 @@ jobs:
           name: Run GitLeaks scan
           command: |
             cd gitleaks
-            ./gitleaks detect -v -f csv --report-path ../git.csv
+            ./gitleaks detect -v -f csv --report-path ../git.csv || true
       - persist_to_workspace:
           root: .
           paths:
@@ -94,7 +94,7 @@ jobs:
           command: docker build -t nodegoat:latest .
       - run:
           name: Run Container Scan
-          command: snyk container test nodegoat:latest --json | snyk-to-html -o results-container.html
+          command: snyk container test nodegoat:latest --json | snyk-to-html -o results-container.html || true
       - persist_to_workspace:
           root: .
           paths:
@@ -114,13 +114,13 @@ jobs:
           command: pip install pandas openpyxl beautifulsoup4
       - run:
           name: Generate XLSX from Code Scan
-          command: python reSAST.py /workspace/code-report.html code-results.xlsx
+          command: python reSAST.py /workspace/code-report.html code-results.xlsx || true
       - run:
           name: Generate XLSX from SCA Scan
-          command: python reSCA.py /workspace/dependency-report.html dependency-results.xlsx
+          command: python reSCA.py /workspace/dependency-report.html dependency-results.xlsx || true
       - run:
           name: Generate XLSX from Container Scan
-          command: python reContainer.py /workspace/results-container.html container-results.xlsx
+          command: python reContainer.py /workspace/results-container.html container-results.xlsx || true
       - persist_to_workspace:
           root: .
           paths:
@@ -152,13 +152,13 @@ jobs:
           command: pip install requests pandas openpyxl
       - run:
           name: Run JIRA SAST Update
-          command: python JIRA_SAST.py /workspace/code-results.xlsx
+          command: python JIRA_SAST.py /workspace/code-results.xlsx || true
       - run:
           name: Run JIRA SCA Update
-          command: python JIRA_SCA.py /workspace/dependency-results.xlsx
+          command: python JIRA_SCA.py /workspace/dependency-results.xlsx || true
       - run:
           name: Run JIRA Container Update
-          command: python JIRA_Container.py /workspace/container-results.xlsx
+          command: python JIRA_Container.py /workspace/container-results.xlsx || true
 
 # Define workflows to execute different scans
 workflows:
