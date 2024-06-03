@@ -3,6 +3,11 @@ version: 2.1
 orbs:
   snyk: snyk/snyk@1.1.2
 
+executors:
+  python-executor:
+    docker:
+      - image: cimg/python:3.8
+
 jobs:
   code_scan:
     docker:
@@ -100,9 +105,8 @@ jobs:
       - store_artifacts:
           path: results-container.html
 
-  generate_xlsx_files:
-    docker:
-      - image: cimg/python:3.8
+generate_xlsx_files:
+    executor: python-executor
     steps:
       - attach_workspace:
           at: /workspace
@@ -128,16 +132,9 @@ jobs:
             - code-results.xlsx
             - dependency-results.xlsx
             - container-results.xlsx
-      - store_artifacts:
-          path: code-results.xlsx
-      - store_artifacts:
-          path: dependency-results.xlsx
-      - store_artifacts:
-          path: container-results.xlsx
 
   run_jira_updates:
-    docker:
-      - image: cimg/python:3.8
+    executor: python-executor
     environment:
       JIRA_USERNAME: $JIRA_USERNAME
       JIRA_API_TOKEN: $JIRA_API_TOKEN
@@ -178,6 +175,9 @@ workflows:
             - sca_scan
             - secret_scan
             - container_scan
+      - run_jira_updates:
+          requires:
+            - generate_xlsx_files
       - run_jira_updates:
           requires:
             - generate_xlsx_files
