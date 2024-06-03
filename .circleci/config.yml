@@ -108,19 +108,22 @@ jobs:
     steps:
       - attach_workspace:
           at: /workspace
+      - run:
+          name: Ensure Workspace Directory Exists
+          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
           command: pip install pandas openpyxl beautifulsoup4
       - run:
           name: Generate XLSX from Code Scan
-          command: python reSAST.py /workspace/code-report.html code-results.xlsx || true
+          command: python reSAST.py /workspace/code-report.html code-results.xlsx
       - run:
           name: Generate XLSX from SCA Scan
-          command: python reSCA.py /workspace/dependency-report.html dependency-results.xlsx || true
+          command: python reSCA.py /workspace/dependency-report.html dependency-results.xlsx
       - run:
           name: Generate XLSX from Container Scan
-          command: python reContainer.py /workspace/results-container.html container-results.xlsx || true
+          command: python reContainer.py /workspace/results-container.html container-results.xlsx
       - persist_to_workspace:
           root: .
           paths:
@@ -146,19 +149,22 @@ jobs:
     steps:
       - attach_workspace:
           at: /workspace
+      - run:
+          name: Ensure Workspace Directory Exists
+          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
           command: pip install requests pandas openpyxl
       - run:
           name: Run JIRA SAST Update
-          command: python JIRA_SAST.py /workspace/code-results.xlsx || true
+          command: python JIRA_SAST.py /workspace/code-results.xlsx
       - run:
           name: Run JIRA SCA Update
-          command: python JIRA_SCA.py /workspace/dependency-results.xlsx || true
+          command: python JIRA_SCA.py /workspace/dependency-results.xlsx
       - run:
           name: Run JIRA Container Update
-          command: python JIRA_Container.py /workspace/container-results.xlsx || true
+          command: python JIRA_Container.py /workspace/container-results.xlsx
 
 # Define workflows to execute different scans
 workflows:
@@ -173,8 +179,8 @@ workflows:
           requires:
             - code_scan
             - sca_scan
-            - container_scan
             - secret_scan
+            - container_scan
       - run_jira_updates:
           requires:
             - generate_xlsx_files
