@@ -108,7 +108,7 @@ jobs:
           at: /workspace
       - run:
           name: Ensure Workspace Directory Exists
-          command: mkdir -p /workspace  # Ensures the workspace directory is created
+          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
@@ -149,7 +149,7 @@ jobs:
           at: /workspace
       - run:
           name: Ensure Workspace Directory Exists
-          command: mkdir -p /workspace  # Ensures the workspace directory is created
+          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
