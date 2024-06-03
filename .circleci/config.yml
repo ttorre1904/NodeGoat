@@ -1,8 +1,8 @@
-# Define reusable orbs
+version: 2.1
+
 orbs:
   snyk: snyk/snyk@1.1.2
 
-# Define jobs for each scan type
 jobs:
   code_scan:
     docker:
@@ -164,7 +164,6 @@ jobs:
           name: Run JIRA Container Update
           command: python JIRA_Container.py /workspace/container-results.xlsx
 
-# Define workflows to execute different scans
 workflows:
   version: 2
   main_workflow:
@@ -182,4 +181,3 @@ workflows:
       - run_jira_updates:
           requires:
             - generate_xlsx_files
-
