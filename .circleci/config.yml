@@ -107,8 +107,8 @@ jobs:
       - attach_workspace:
           at: /workspace
       - run:
-          name: Ensure Workspace Directory Exists (Fixed)
-          command: mkdir -p /workspace  # This line creates the workspace directory
+          name: Ensure Workspace Directory Exists
+          command: mkdir -p /workspace  # Ensures the workspace directory is created
       - checkout
       - run:
           name: Install Python dependencies
@@ -148,8 +148,8 @@ jobs:
       - attach_workspace:
           at: /workspace
       - run:
-          name: Ensure Workspace Directory Exists (Fixed)
-          command: mkdir -p /workspace  # This line creates the workspace directory
+          name: Ensure Workspace Directory Exists
+          command: mkdir -p /workspace  # Ensures the workspace directory is created
       - checkout
       - run:
           name: Install Python dependencies
