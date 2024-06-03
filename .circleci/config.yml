@@ -108,11 +108,11 @@ jobs:
   generate_xlsx_files:
     executor: python-executor
     steps:
+      - run:
+          name: Create Workspace Directory
+          command: mkdir -p /workspace
       - attach_workspace:
           at: /workspace
-      - run:
-          name: Ensure Workspace Directory Exists
-          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
@@ -142,11 +142,11 @@ jobs:
       JIRA_ASSIGNEE: $JIRA_ASSIGNEE
       JIRA_SEVERITY: $JIRA_SEVERITY
     steps:
+      - run:
+          name: Create Workspace Directory
+          command: mkdir -p /workspace
       - attach_workspace:
           at: /workspace
-      - run:
-          name: Ensure Workspace Directory Exists
-          command: mkdir -p /workspace
       - checkout
       - run:
           name: Install Python dependencies
