@@ -126,7 +126,7 @@ jobs:
           name: Generate XLSX from Container Scan
           command: python reContainer.py ~/project/workspace/results-container.html container-results.xlsx
       - persist_to_workspace:
-          root:.
+          root: .
           paths:
             - code-results.xlsx
             - dependency-results.xlsx
