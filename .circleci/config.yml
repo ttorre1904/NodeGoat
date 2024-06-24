@@ -22,9 +22,9 @@ jobs:
           additional-arguments: --json-file-output=code-results.json
       - run:
           name: Generate Snyk HTML report
-          command: cat code-results.json | snyk-to-html -o code-report.html
+          command: snyk-to-html -i code-results.json -o source-code-analysis.html
       - store_artifacts:
-          path: code-report.html
+          path: source-code-analysis.html
 
 workflows:
   build-test-snyk:
