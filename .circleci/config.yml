@@ -4,7 +4,7 @@ orbs:
   sonarscanner: psl/sonarscanner@0.0.4
 
 jobs:
-  # Sonarqube scanner   
+  # SonarQube scanner   
   scan:
     docker:
       - image: cimg/openjdk:17.0
@@ -19,14 +19,14 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace    
       - run:
-          name: Install Sonarqube scanner 
+          name: Install SonarQube scanner 
           command: |
             sudo apt-get update
             wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
             unzip sonar-scanner.zip
             rm sonar-scanner.zip
       - run:
-          name: Run Sonarscanner
+          name: Run SonarScanner
           command: |
             export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
             sonar-scanner \
@@ -40,4 +40,3 @@ workflows:
     jobs:
       - scan:
           context: sonarqube
-
