@@ -7,7 +7,7 @@ jobs:
   # SonarQube scanner   
   scan:
     docker:
-      - image: openjdk:11
+      - image: cimg/openjdk:17.0
     working_directory: /tmp/workspace
     environment:
       ENV_FILE: /tmp/workspace/.circleenv
@@ -30,6 +30,7 @@ jobs:
             export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
             sonar-scanner \
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
+              -Dsonar.sources=. \
               -Dsonar.host.url=http://65.1.31.213:9000/ \
               -Dsonar.login=$SONAR_TOKEN  
 
