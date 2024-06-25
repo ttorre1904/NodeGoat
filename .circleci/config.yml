@@ -1,42 +1,48 @@
 version: 2.1
 
-orbs:
-  sonarscanner: psl/sonarscanner@0.0.4
+executors:
+  scanner:
+    docker:
+      - image: sonarqube:8.9-community
+
+commands:
+  check-code-quality:
+    description: Check Code Quality
+    parameters:
+      sonar_server_url:
+        type: string
+        description: "URL of your SonarQube server. e.g.: http://my.sonarqube,server:9000"
+        default: http://65.1.31.213:9000/
+      sonar_login:
+        description: "Authentication key (sonar.login paramter) to access SonarQube and perform analysis"
+        type: string
+        default: "$SONAR_TOKEN"
+
+    steps:
+        - run:
+            name: Install Sonarqube scanner
+            command: |
+                wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873.zip
+                unzip sonar-scanner-cli-4.2.0.1873.zip
+
+        - run:
+            name: Run Sonarscanner
+            command: |
+                export SONAR_SCANNER_OPTS="-Xmx2048m"
+                eval ./sonar-scanner-4.2.0.1873/bin/sonar-scanner \
+                -Dsonar.projectKey=projectKey \
+                -Dsonar.host.url=<< parameters.sonar_server_url >> \
+                -Dsonar.sources= . \
+                -Dsonar.login=<< parameters.sonar_login >>
 
 jobs:
-  # SonarQube scanner   
-  scan:
-    docker:
-      - image: cimg/openjdk:17.0
-    working_directory: /tmp/workspace
-    environment:
-      ENV_FILE: /tmp/workspace/.circleenv
-      DOCKER_BUILDKIT: "1"
-      BUILDKIT_PROGRESS: plain       
-      SONAR_TOKEN: ${SONAR_TOKEN}
+  check-code-job:
+    executor: scanner
     steps:
-      - checkout  
-      - attach_workspace:
-          at: /tmp/workspace    
-      - run:
-          name: Install SonarQube scanner 
-          command: |
-            wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-            unzip sonar-scanner.zip
-            rm sonar-scanner.zip
-      - run:
-          name: Run SonarScanner
-          command: |
-            export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
-            sonar-scanner \
-              -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=http://65.1.31.213:9000/ \
-              -Dsonar.login=$SONAR_TOKEN  
+      - check-code-quality
 
-workflows: 
-  version: 2
-  main:
+workflows:
+  check-code-quality-flow:
     jobs:
-      - scan:
-          context: sonarqube
+      - check-code-job:
+          context: lineclass
