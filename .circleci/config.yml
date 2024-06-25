@@ -5,28 +5,25 @@ executors:
     docker:
       - image: sonarqube:8.9-community
 
-    steps:
-        - run:
-            name: Install Sonarqube scanner
-            command: |
-                wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873.zip
-                unzip sonar-scanner-cli-4.2.0.1873.zip
-
-        - run:
-            name: Run Sonarscanner
-            command: |
-                export SONAR_SCANNER_OPTS="-Xmx2048m"
-                eval ./sonar-scanner-4.2.0.1873/bin/sonar-scanner \
-                -Dsonar.projectKey=projectKey \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://65.1.31.213:9000 \
-                -Dsonar.token=sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
-
 jobs:
   check-code-job:
     executor: scanner
     steps:
-      - check-code-quality
+      - run:
+          name: Install Sonarqube scanner
+          command: |
+            wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873.zip
+            unzip sonar-scanner-cli-4.2.0.1873.zip
+
+      - run:
+          name: Run Sonarscanner
+          command: |
+            export SONAR_SCANNER_OPTS="-Xmx2048m"
+            ./sonar-scanner-4.2.0.1873/bin/sonar-scanner \
+            -Dsonar.projectKey=projectKey \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://65.1.31.213:9000 \
+            -Dsonar.token=sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
 
 workflows:
   check-code-quality-flow:
