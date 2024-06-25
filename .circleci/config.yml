@@ -31,7 +31,7 @@ jobs:
             export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
             sonar-scanner \
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
-              -Dsonar.host.url=http://192.168.137.30:9000/ \
+              -Dsonar.host.url=http://65.1.31.213:9000/ \
               -Dsonar.login=$SONAR_TOKEN  
 
 workflows: 
