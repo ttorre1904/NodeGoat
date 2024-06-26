@@ -1,38 +1,27 @@
 version: 2.1
 
-executors:
-  default:
-    docker:
-      - image: circleci/openjdk:11.0
+orbs:
+  sonarscanner: psl/sonarscanner@0.0.4  # Update orb version if needed
 
 jobs:
-  build:
+  sonar-analysis:
     docker:
-      - image: circleci/openjdk:11.0
+      - image: circleci/openjdk:11.0  # Replace with the image for your project
+
     steps:
       - checkout
 
-      # Install SonarQube Scanner
-      - run:
-          name: Install SonarQube Scanner
-          command: |
-            export SONAR_SCANNER_VERSION=6.0.0.4432
-            export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
-            curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip
-            unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
-            chmod +x $SONAR_SCANNER_HOME/bin/sonar-scanner
+      # Run SonarScanner to perform analysis
+      - sonarscanner/scan:
+          sonar-login: sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
+          sonar-host-url: http://65.1.31.213:9000/
+          sonar-project-key: Test
+          sonar-sources: . 
 
-      # Verify SonarQube Scanner Installation
-      - run:
-          name: Verify SonarQube Scanner Installation
-          command: $SONAR_SCANNER_HOME/bin/sonar-scanner --version
-
-      # Execute SonarQube Scanner
-      - run:
-          name: Execute SonarQube Scanner
-          command: |
-            $SONAR_SCANNER_HOME/bin/sonar-scanner \
-              -Dsonar.projectKey=Test \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=http://65.1.31.213:9000 \
-              -Dsonar.login=$SONAR_TOKEN
+workflows:
+  build-and-analyze:
+    jobs:
+      - sonar-analysis:
+          filters:
+            branches:
+              only: main
