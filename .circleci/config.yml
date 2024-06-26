@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  sonarscanner: psl/sonarscanner@0.0.4  # Update orb version if needed
+  sonarqube: sonarsource/sonarqube@1.0.2  # Updated orb
 
 jobs:
   sonar-analysis:
@@ -12,11 +12,12 @@ jobs:
       - checkout
 
       # Run SonarScanner to perform analysis
-      - sonarscanner/scan:
-          sonar-login: sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
-          sonar-host-url: http://65.1.31.213:9000/
-          sonar-project-key: Test
-          sonar-sources: . 
+      - sonarqube/scan:
+          organization: your-organization
+          projectKey: Test
+          sonarHostUrl: http://65.1.31.213:9000/
+          sonarToken: sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
+          sources: "."
 
 workflows:
   build-and-analyze:
