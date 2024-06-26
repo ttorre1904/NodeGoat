@@ -23,12 +23,17 @@ jobs:
             export PATH=$SONAR_SCANNER_HOME/bin:$PATH
             export SONAR_SCANNER_OPTS="-server"
 
+      # Ensure sonar-scanner is executable
+      - run:
+          name: Verify SonarQube Scanner Installation
+          command: sonar-scanner --version
+
       # Execute SonarQube Scanner
       - run:
           name: Execute SonarQube Scanner
           command: |
-            sonar-scanner \
+            $SONAR_SCANNER_HOME/bin/sonar-scanner \
               -Dsonar.projectKey=Test \
               -Dsonar.sources=. \
               -Dsonar.host.url=http://65.1.31.213:9000 \
-              -Dsonar.token=sqp_083db3e736a51442ff7284b5af4630b3e6ec21a5
+              -Dsonar.login=$SONAR_TOKEN
