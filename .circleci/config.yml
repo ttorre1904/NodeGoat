@@ -28,8 +28,6 @@ jobs:
               sonarsource/sonar-scanner-cli
 
 workflows:
-  version: 2
   build-and-analyze:
-    jobs:
-      - sonar-analysis:
+      - sonar-analysis
 
