@@ -33,7 +33,7 @@ jobs:
               --rm \
               -v "${PWD}:/usr/src" \
               -e SONAR_HOST_URL=http://65.1.31.213:9000/ \
-              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=NodeGoat" \
+              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=NodeGoat101" \
               -e SONAR_TOKEN=$SONAR_TOKEN \
               sonarsource/sonar-scanner-cli:latest
 
