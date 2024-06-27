@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   sonar-analysis:
     docker:
-      - image: circleci/ubuntu:latest  # Use CircleCI's Ubuntu image
+      - image: ubuntu
 
     steps:
       - checkout
@@ -40,7 +40,4 @@ jobs:
 workflows:
   build-and-analyze:
     jobs:
-      - sonar-analysis:
-          filters:
-            branches:
-              only: main
+      - sonar-analysis
