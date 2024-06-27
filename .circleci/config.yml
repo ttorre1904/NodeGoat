@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   sonar-analysis:
     docker:
-      - image: circleci/ubuntu:latest  # Use Ubuntu as base image
+      - image: ubuntu-2204:2024.05.1
 
     steps:
       - checkout
