@@ -3,12 +3,19 @@ version: 2.1
 jobs:
   sonar-analysis:
     docker:
-      - image: ubuntu
+      - image: circleci/ubuntu:latest  # Use CircleCI's Ubuntu image
 
     steps:
       - checkout
 
-      # Setup Docker
+      # Install Docker client
+      - run:
+          name: Install Docker client
+          command: |
+            apt-get update
+            apt-get install -y docker.io
+
+      # Setup Docker environment
       - setup_remote_docker:
           version: 20.10.7  # Specify the Docker version to use
 
@@ -33,4 +40,7 @@ jobs:
 workflows:
   build-and-analyze:
     jobs:
-      - sonar-analysis
+      - sonar-analysis:
+          filters:
+            branches:
+              only: main
