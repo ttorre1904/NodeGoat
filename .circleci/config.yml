@@ -9,7 +9,7 @@ environment:
 jobs:
   sonar-analysis:
     docker:
-      - image: sonarsource/sonar-scanner-cli 
+      - image: sonarsource/sonar-scanner-cli:latest  # Use the SonarScanner CLI Docker image
 
     steps:
       - checkout
@@ -24,10 +24,14 @@ jobs:
               --network="host" \
               -e SONAR_HOST_URL=${SONAR_HOST_URL} \
               -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${SONAR_PROJECT_KEY}" \
-              -e SONAR_TOKEN=$SONAR_TOKEN  
+              -e SONAR_TOKEN=$SONAR_TOKEN  # Use environment variable for token (not stored in config)
               sonarsource/sonar-scanner-cli
 
 workflows:
+  version: 2
   build-and-analyze:
     jobs:
       - sonar-analysis:
+          filters:
+            branches:
+              only: main
