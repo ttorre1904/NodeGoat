@@ -3,19 +3,12 @@ version: 2.1
 jobs:
   sonar-analysis:
     docker:
-      - image: ubuntu
+      - image: circleci/openjdk:11.0  # Use the Java Docker image for running SonarScanner
 
     steps:
       - checkout
 
-      # Install Docker client
-      - run:
-          name: Install Docker client
-          command: |
-            apt-get update
-            apt-get install -y docker.io
-
-      # Setup Docker environment
+      # Setup Docker
       - setup_remote_docker:
           version: 20.10.7  # Specify the Docker version to use
 
@@ -25,6 +18,13 @@ jobs:
           command: |
             docker pull sonarsource/sonar-scanner-cli:latest
 
+      # Display current directory
+      - run:
+          name: Show current directory
+          command: |
+            pwd
+            ls -l
+
       # Run SonarQube Scanner
       - run:
           name: Run SonarQube Scanner
@@ -33,7 +33,7 @@ jobs:
               --rm \
               -v "${PWD}:/usr/src" \
               -e SONAR_HOST_URL=http://65.1.31.213:9000/ \
-              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=NodeGoat101" \
+              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=NodeGoat" \
               -e SONAR_TOKEN=$SONAR_TOKEN \
               sonarsource/sonar-scanner-cli:latest
 
