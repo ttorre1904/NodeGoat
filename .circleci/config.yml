@@ -32,6 +32,4 @@ workflows:
   build-and-analyze:
     jobs:
       - sonar-analysis:
-          filters:
-            branches:
-              only: main
+
