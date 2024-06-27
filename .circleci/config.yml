@@ -1,30 +1,36 @@
 version: 2.1
 
-# Define SonarQube server address and project key as environment variables
-# (replace with your actual token and store securely using CircleCI secrets)
-environment:
-  SONAR_HOST_URL: http://65.1.31.213:9000/
-  SONAR_PROJECT_KEY: NodeGoat
-
 jobs:
   sonar-analysis:
     docker:
-      - image: sonarsource/sonar-scanner-cli:latest  # Use the SonarScanner CLI Docker image
+      - image: circleci/ubuntu:latest  # Use Ubuntu as base image
 
     steps:
       - checkout
 
-      # Run SonarQube analysis using Docker (without sudo)
+      # Install Docker
+      - run:
+          name: Install Docker
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+
+      # Pull SonarQube Docker image
+      - run:
+          name: Pull SonarQube Docker image
+          command: |
+            docker pull sonarsource/sonar-scanner-cli:latest
+
+      # Run SonarQube analysis using Docker
       - run:
           name: Run SonarQube analysis
           command: |
             docker run \
               --rm \
               -v "${PWD}:/usr/src" \
-              --network="host" \
-              -e SONAR_HOST_URL=${SONAR_HOST_URL} \
-              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=${SONAR_PROJECT_KEY}" \
-              -e SONAR_TOKEN=$SONAR_TOKEN  # Use environment variable for token (not stored in config)
+              -e SONAR_HOST_URL=http://65.1.31.213:9000/ \
+              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=NodeGoat" \
+              -e SONAR_TOKEN=$SONAR_TOKEN \
               sonarsource/sonar-scanner-cli
 
 workflows:
