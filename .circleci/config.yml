@@ -1,23 +1,24 @@
 version: 2.1
 
-orbs:
-  sonarqube: sonarsource/sonarqube@1.0.2  # Updated orb
-
 jobs:
   sonar-analysis:
     docker:
-      - image: circleci/openjdk:11.0  # Replace with the image for your project
-
+      - image: sonarsource/sonar-scanner-cli:latest  # Use the SonarScanner CLI Docker image
     steps:
       - checkout
 
-      # Run SonarScanner to perform analysis
-      - sonarqube/scan:
-          organization: your-organization
-          projectKey: Test
-          sonarHostUrl: http://65.1.31.213:9000/
-          sonarToken: sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823
-          sources: "."
+      # Run SonarQube analysis using Docker
+      - run:
+          name: Run SonarQube analysis
+          command: |
+            sudo docker run \
+              --rm \
+              -v "${PWD}:/usr/src" \
+              --network="host" \
+              -e SONAR_HOST_URL="http://65.1.31.213:9000/" \
+              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=Test" \
+              -e SONAR_TOKEN="sqa_7133fba4d5ef09560130e30ce3e1e23a39d26823" \
+              sonarsource/sonar-scanner-cli
 
 workflows:
   build-and-analyze:
