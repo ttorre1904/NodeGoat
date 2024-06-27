@@ -29,6 +29,5 @@ jobs:
 
 workflows:
   build-and-analyze:
-    -jobs:
+    jobs:
       - sonar-analysis
-
