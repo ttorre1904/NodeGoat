@@ -13,7 +13,7 @@ jobs:
           name: Run SonarQube Scanner
           command: |
             sonar-scanner \
-              -Dsonar.projectKey=NodeGoat102 \
+              -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
               -Dsonar.sources=. \
               -Dsonar.host.url=http://65.1.31.213:9000 \
               -Dsonar.token=sqp_069cf4ee1673a0158bbbd8ec263a09cd388d03f2
