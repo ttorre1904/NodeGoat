@@ -1,0 +1,41 @@
+name: ShiftLeft Scan
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  Scan-Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup Python
+      uses: actions/setup-python@v5.2.0
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip3 install requests
+    
+    - name: Install Syft
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+    - name: Install Grype
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+    - name: Generate SBOM with Syft
+      run: |
+        syft . -o json > sbom.json
+
+    - name: Scan Vulnerabilities with Grype
+      run: |
+        grype sbom:sbom.json -o table
+    
