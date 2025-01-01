@@ -1,0 +1,38 @@
+name: Vorpal Code Scanning with reviewdog
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 3 * * *" # Runs daily at 3 AM UTC
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Step 3: Install dependencies
+      - name: Install project dependencies
+        run: npm install
+
+      # Step 4: Run Vorpal GitHub Action with reviewdog
+      - name: Vorpal GitHub Action With reviewdog
+        uses: Checkmarx/vorpal-reviewdog-github-action@v1.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review # Report as a PR review comment
+          level: warning             # Severity level for reviewdog comments

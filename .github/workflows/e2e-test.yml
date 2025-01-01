@@ -59,3 +59,4 @@ jobs:
         with:
           name: cypress-artifacts-node${{ matrix.node-version }}
           path: test/e2e/screenshots
+            
