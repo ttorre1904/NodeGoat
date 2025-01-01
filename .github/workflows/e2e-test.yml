@@ -59,3 +59,7 @@ jobs:
         with:
           name: cypress-artifacts-node${{ matrix.node-version }}
           path: test/e2e/screenshots
+
+      - name: Vorpal Github Action With reviewdog
+        uses: Checkmarx/vorpal-reviewdog-github-action@v1.1.0
+            
