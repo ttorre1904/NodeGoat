@@ -18,4 +18,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          semgrep ci --supply-chain --verbose
+          semgrep ci --supply-chain --verbose --debug
