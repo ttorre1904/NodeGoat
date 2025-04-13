@@ -1,7 +1,7 @@
 const UserDAO = require("./user-dao").UserDAO;
 
 /* The AllocationsDAO must be constructed with a connected database object */
-const AllocationsDAO = function(db){
+const AllocationsDAO = function (db) {
 
     "use strict";
 
@@ -60,22 +60,18 @@ const AllocationsDAO = function(db){
         const searchCriteria = () => {
 
             if (threshold) {
-                /*
                 // Fix for A1 - 2 NoSQL Injection - escape the threshold parameter properly
-                // Fix this NoSQL Injection which doesn't sanitze the input parameter 'threshold' and allows attackers
-                // to inject arbitrary javascript code into the NoSQL query:
-                // 1. 0';while(true){}'
-                // 2. 1'; return 1 == '1
-                // Also implement fix in allocations.html for UX.                             
+                // Parse threshold as integer to prevent NoSQL injection
                 const parsedThreshold = parseInt(threshold, 10);
-                
-                if (parsedThreshold >= 0 && parsedThreshold <= 99) {
-                    return {$where: `this.userId == ${parsedUserId} && this.stocks > ${parsedThreshold}`};
+
+                if (isNaN(parsedThreshold) || parsedThreshold < 0 || parsedThreshold > 99) {
+                    return callback(`The user supplied threshold: ${threshold} was not valid.`, null);
                 }
-                throw `The user supplied threshold: ${parsedThreshold} was not valid.`;
-                */
+
+                // Use parsed values in the query to prevent injection
                 return {
-                    $where: `this.userId == ${parsedUserId} && this.stocks > '${threshold}'`
+                    userId: parsedUserId,
+                    stocks: { $gt: parsedThreshold }
                 };
             }
             return {
@@ -90,7 +86,7 @@ const AllocationsDAO = function(db){
             let doneCounter = 0;
             const userAllocations = [];
 
-            allocations.forEach( alloc => {
+            allocations.forEach(alloc => {
                 userDAO.getUserById(alloc.userId, (err, user) => {
                     if (err) return callback(err, null);
 
