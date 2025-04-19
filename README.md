@@ -1,3 +1,22 @@
+# Amadeus Security Demo – NodeGoat + Checkmarx OSS
+
+This repo demonstrates how Checkmarx open-source tools can elevate application security:
+
+- ✅ IaC Scan with **KICS** – Finds insecure cloud configs
+- ✅ Code Scan with **Vorpal** – Highlights insecure code patterns
+- ✅ Secret Detection with **2MS** – Detects hardcoded secrets
+
+### Files to Trigger Results
+
+| Tool     | Test File                              | Purpose                      |
+|----------|----------------------------------------|------------------------------|
+| KICS     | `iac/open-sg.tf`                       | Public S3, open ports        |
+| Vorpal   | `vulnerable_code/application.js`       | `eval()`     |
+| 2MS      | `config/secrets-db.env `               | tokens & passwords      |
+
+➡️ View results in the [Actions](../../actions) tab.
+
+
 # NodeGoat
 
 Being lightweight, fast, and scalable, Node.js is becoming a widely adopted platform for developing web applications. This project provides an environment to learn how OWASP Top 10 security risks apply to web applications developed using Node.js and how to effectively address them.
