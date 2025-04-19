@@ -9,6 +9,7 @@ on:
 jobs:
   kics-scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -16,5 +17,10 @@ jobs:
       - name: Run KICS Scan
         uses: checkmarx/kics-github-action@v1.6
         with:
-          path: '.'
-          output_path: 'kics_results'
+          path: '.'  # Path to scan, this will scan the entire repo
+          output_path: 'kics_results'  # Path where results will be stored
+
+      - name: Display KICS Scan Results
+        run: |
+          echo "KICS Scan Output:"
+          cat kics_results/* || echo "No results found"
