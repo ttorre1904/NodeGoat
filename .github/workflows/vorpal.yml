@@ -1,25 +1,27 @@
 name: Vorpal Code Scan
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+# on:
+#   push:
+#     branches: [master]
+#   pull_request:
+#     branches: [master]
+
+# name: vorpal-reviewdog
+
+on: [push]
 
 jobs:
-  vorpal-scan:
+  vorpal:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Run Vorpal Scan
+      - name: Vorpal with reviewdog
         uses: checkmarx/vorpal-reviewdog-github-action@v1.0.0
         with:
-          path: '.'  # Path to source code
-
-      - name: Display Scan Results
-        run: |
-          echo "Vorpal Scan Output:"
-          cat /tmp/vorpal-report.json || echo "No report found"
+          source_path: "."
+          filter_mode: nofilter
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          level: error
+          fail_on_error: false
