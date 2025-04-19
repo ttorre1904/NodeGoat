@@ -2,9 +2,9 @@ name: Secret Detection - 2MS
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   secrets-detection:
