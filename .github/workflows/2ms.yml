@@ -1,0 +1,20 @@
+name: Secret Detection - 2MS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  secrets-detection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run 2MS
+        uses: checkmarx/tms-github-action@v1
+        with:
+          path: '.'  # Directory to scan
