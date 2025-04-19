@@ -8,7 +8,9 @@ name: Vorpal Code Scan
 
 # name: vorpal-reviewdog
 
-on: [push]
+on:
+  push:
+    branches: [master]  # Adjust this to your default branch
 
 jobs:
   vorpal:
@@ -19,8 +21,8 @@ jobs:
       - name: Vorpal with reviewdog
         uses: checkmarx/vorpal-reviewdog-github-action@v1.0.0
         with:
-          source_path: "."
-          filter_mode: nofilter
+          source_path: '**/*.java,**/*.py,**/*.js,**/*.cs'  # Adjust file patterns as needed
+          filter_mode: file
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
           level: error
