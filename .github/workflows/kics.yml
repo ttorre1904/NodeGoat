@@ -1,0 +1,20 @@
+name: KICS IaC Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  kics-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run KICS Scan
+        uses: checkmarx/kics-github-action@v1.6
+        with:
+          path: '.'
+          output_path: 'kics_results'
