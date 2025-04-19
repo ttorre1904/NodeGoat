@@ -14,7 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run 2MS
+      - name: Run 2MS Secret Detection
         uses: checkmarx/tms-github-action@v1
         with:
           path: '.'  # Directory to scan
+
+      - name: Display Scan Results
+        run: |
+          echo "2MS Scan Output:"
+          cat /tmp/2ms-report.json || echo "No report found"
