@@ -18,3 +18,8 @@ jobs:
         uses: checkmarx/vorpal-action@v1
         with:
           path: '.'  # Path to source code
+
+      - name: Display Scan Results
+        run: |
+          echo "Vorpal Scan Output:"
+          cat /tmp/vorpal-report.json || echo "No report found"
