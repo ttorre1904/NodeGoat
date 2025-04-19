@@ -1,0 +1,20 @@
+name: Vorpal Code Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  vorpal-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Vorpal Scan
+        uses: checkmarx/vorpal-action@v1
+        with:
+          path: '.'  # Path to source code
