@@ -27,3 +27,9 @@ jobs:
           reporter: github-pr-check
           level: error
           fail_on_error: false
+
+      - name: Display Vorpal Scan Results
+        if: always()
+        run: |
+          echo "Vorpal Scan Results:"
+          cat /github/workspace/result.errorformat || echo "No issues found."
