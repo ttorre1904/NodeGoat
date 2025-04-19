@@ -18,3 +18,11 @@ resource "aws_security_group" "example" {
     cidr_blocks = ["0.0.0.0/0"]  # Open to the world
   }
 }
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_s3_bucket" "my_insecure_bucket" {
+  bucket = "my-insecure-bucket"
+  acl    = "public-read"  # This will trigger an alert for an insecure configuration
+}
