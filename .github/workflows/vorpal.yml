@@ -21,7 +21,7 @@ jobs:
       - name: Vorpal with reviewdog
         uses: checkmarx/vorpal-reviewdog-github-action@v1.0.0
         with:
-          source_path: '**'  # Adjust file patterns as needed
+          source_path: '**/'  # Adjust file patterns as needed
           filter_mode: file
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
