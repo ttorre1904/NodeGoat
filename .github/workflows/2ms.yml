@@ -45,6 +45,5 @@ jobs:
           ls -la "$GITHUB_WORKSPACE"
   
           echo "🚀 Running 2MS without redirection..."
-          # docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git /repo
-          docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 path /repo
+          docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git /repo
 
