@@ -1,25 +1,29 @@
-name: Secret Detection - 2MS
+name: Pipeline Example With 2MS
 
 on:
-  push:
-    branches: [master]
   pull_request:
+  workflow_dispatch:
+  push:
     branches: [master]
 
 jobs:
-  secrets-detection:
+  test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run 2MS Secret Detection
-        uses: checkmarx/tms-github-action@v1
+        uses: actions/checkout@v4
         with:
-          path: '.'  # Directory to scan
+          fetch-depth: 0
 
-      - name: Display Scan Results
+      - name: Run 2ms Scan
         run: |
-          echo "2MS Scan Output:"
-          cat /tmp/2ms-report.json || echo "No report found"
+          docker run -v $(pwd):/repo checkmarx/2ms:2.8.1 git /repo > 2ms_results.txt
+          cat 2ms_results.txt
+
+          # Optional: fail if HIGH severity issues are found
+          if grep -q "HIGH" 2ms_results.txt; then
+            echo "❌ High severity issues found!"
+            exit 1
+          else
+            echo "✅ No high severity issues found."
+          fi
