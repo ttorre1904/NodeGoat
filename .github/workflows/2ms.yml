@@ -35,4 +35,4 @@ jobs:
            ls -R "$GITHUB_WORKSPACE"
 
            echo "🚀 Launching Docker scan..."
-           docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git /repo
+           docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git --exclude node_modules /repo
