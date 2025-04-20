@@ -28,11 +28,31 @@ jobs:
       #     else
       #       echo "✅ No high severity issues found."
       #     fi
+      
+      # - name: Run 2ms Scan
+      #   run: |
+      #      echo "🔍 Running Checkmarx 2MS Scan..."
+      #      echo "📁 Current workspace: $GITHUB_WORKSPACE"
+      #      ls -R "$GITHUB_WORKSPACE"
+
+      #      echo "🚀 Launching Docker scan..."
+      #      docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git --exclude node_modules /repo
+
       - name: Run 2ms Scan
         run: |
-           echo "🔍 Running Checkmarx 2MS Scan..."
-           echo "📁 Current workspace: $GITHUB_WORKSPACE"
-           ls -R "$GITHUB_WORKSPACE"
-
-           echo "🚀 Launching Docker scan..."
-           docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git --exclude node_modules /repo
+          echo "🔍 Running Checkmarx 2MS Scan..."
+          docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git /repo > 2ms_results.txt 2>&1
+      
+          echo -e "\n=== 🧾 2MS Scan Results ==="
+          cat 2ms_results.txt || echo "⚠️ No output from 2MS"
+      
+          echo -e "\n=== 🔍 Summary ==="
+          grep -E 'ruleid:' 2ms_results.txt || echo "✅ No rule hits found."
+      
+          # Optional: fail the job if secrets were found
+          if grep -q 'ruleid:' 2ms_results.txt; then
+            echo "❌ Secrets detected by 2MS!"
+            exit 1
+          else
+            echo "✅ No secrets detected."
+          fi
