@@ -17,9 +17,10 @@ jobs:
 
       - name: Run 2ms Scan
         run: |
-          docker run -v $(pwd):/repo checkmarx/2ms:2.8.1 git /repo > 2ms_results.txt
+          docker run -v $(pwd):/repo checkmarx/2ms:2.8.1 git /repo > 2ms_results.txt 2>&1
+          echo "=== 2MS Scan Results ==="
           cat 2ms_results.txt
-
+          
           # Optional: fail if HIGH severity issues are found
           if grep -q "HIGH" 2ms_results.txt; then
             echo "❌ High severity issues found!"
