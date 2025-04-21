@@ -1,0 +1,49 @@
+name: Pipeline Example With 2MS
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # - name: Run 2ms Scan
+      #   run: |
+      #     docker run -v $(pwd):/repo checkmarx/2ms:2.8.1 git /repo > 2ms_results.txt 2>&1
+      #     echo "=== 2MS Scan Results ==="
+      #     cat 2ms_results.txt
+          
+      #     # Optional: fail if HIGH severity issues are found
+      #     if grep -q "HIGH" 2ms_results.txt; then
+      #       echo "❌ High severity issues found!"
+      #       exit 1
+      #     else
+      #       echo "✅ No high severity issues found."
+      #     fi
+      
+      # - name: Run 2ms Scan
+      #   run: |
+      #      echo "🔍 Running Checkmarx 2MS Scan..."
+      #      echo "📁 Current workspace: $GITHUB_WORKSPACE"
+      #      ls -R "$GITHUB_WORKSPACE"
+
+      #      echo "🚀 Launching Docker scan..."
+      #      docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git --exclude node_modules /repo
+
+      - name: Run 2ms Scan (debug mode, no redirect)
+        run: |
+          echo "🔍 Running Checkmarx 2MS Scan..."
+          echo "📁 Workspace path: $GITHUB_WORKSPACE"
+          ls -la "$GITHUB_WORKSPACE"
+  
+          echo "🚀 Running 2MS without redirection..."
+          docker run -v "$GITHUB_WORKSPACE:/repo" checkmarx/2ms:2.8.1 git /repo
+
