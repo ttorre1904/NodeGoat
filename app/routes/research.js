@@ -12,7 +12,15 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+            const allowedDomains = ['https://trustedsource.com', 'https://anothertrustedsource.com'];
+            const userUrl = req.query.url;
+            const isValidDomain = allowedDomains.some(domain => userUrl.startsWith(domain));
+
+            if (!isValidDomain) {
+                return res.status(400).send("Invalid URL domain.");
+            }
+
+            const url = userUrl + req.query.symbol;
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {

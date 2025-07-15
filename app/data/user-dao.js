@@ -88,8 +88,15 @@ function UserDAO(db) {
             }
         };
 
+        // Validate and sanitize userName input
+        if (typeof userName !== 'string' || userName.trim() === '') {
+            const invalidUserNameError = new Error("Invalid userName");
+            invalidUserNameError.invalidUserName = true;
+            return callback(invalidUserNameError, null);
+        }
+
         usersCol.findOne({
-            userName: userName
+            userName: userName.trim()
         }, validateUserDoc);
     };
 
