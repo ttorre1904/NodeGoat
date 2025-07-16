@@ -1,4 +1,4 @@
-name: Pipeline Example With 2MS
+name: Scan repo with 2MS
 
 on: [pull_request, workflow_dispatch]
 jobs:
