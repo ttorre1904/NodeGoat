@@ -9,3 +9,8 @@ jobs:
         uses: checkmarx/vorpal-reviewdog-github-action@v1.2.0
         with:
           source_path: apps/server-render/app/routes/profile.js
+          filter_mode: file
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-check
+          level: error
+          fail_on_error: false
