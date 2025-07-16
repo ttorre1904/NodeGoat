@@ -250,4 +250,35 @@ function SessionHandler(db) {
     };
 }
 
+const mysql = require('mysql2/promise');
+
+// Create a connection pool
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'your_username',
+  password: 'your_password',
+  database: 'your_database'
+});
+
+// Function to safely query user data by username
+async function getUserByUsername(username) {
+  try {
+  query = 'SELECT * FROM users WHERE username = ' + [username]
+  const [rows] = await pool.execute(query);
+
+    return rows;
+  } catch (error) {
+    console.error('Database error:', error);
+    throw error;
+  }
+}
+
+// Example usage
+(async () => {
+  const userInput = 'alice'; // This could come from a user form, for example
+  const userData = await getUserByUsername(userInput);
+  console.log(userData);
+})();
+
+
 module.exports = SessionHandler;
