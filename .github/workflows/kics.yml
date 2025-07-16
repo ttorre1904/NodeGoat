@@ -1,4 +1,4 @@
-name: kics-github-action
+name: Scan IaC templates with KICS
 
 on: [pull_request, workflow_dispatch]
 
