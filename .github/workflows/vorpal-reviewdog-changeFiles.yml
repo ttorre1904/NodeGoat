@@ -1,4 +1,4 @@
-name: vorpal-reviewdog-changeFiles
+name: Vorpal - Scan changed files
 on: [pull_request]
 jobs:
   vorpal:
