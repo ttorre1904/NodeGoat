@@ -1,4 +1,4 @@
-name: Pipeline Example With 2MS
+name: 2MS - Scan Repo for secrets-related risks
 
 on:
   pull_request:
