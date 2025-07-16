@@ -1,21 +1,26 @@
-name: 2MS - Scan Repo for secrets-related risks
+name: 2ms Scan
 
 on:
+  push:
+    branches:
+      - feature/187
   pull_request:
-    workflow_dispatch:
-    push:
-      branches: [feature/187]
+    branches:
+      - feature/187
+  workflow_dispatch:
+
 jobs:
-  test:
+  scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@v4
+
+      - name: Set up 2ms
+        uses: checkmarx/2ms-action@v1
         with:
-          # Required for 2ms to have visibility to all commit history
-          fetch-depth: 0
+          # Specify the 2ms version (optional)
+          version: 2.8.1
 
-      # ...
-
-      - name: Run 2ms Scan
-        run: docker run -v $(pwd):/repo ttorre1904/nodegoat:1.0.0 git /repo
+      - name: Run 2ms
+        run: 2ms scan --repo-path "${{ github.workspace }}"
