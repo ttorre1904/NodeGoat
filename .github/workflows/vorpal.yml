@@ -8,4 +8,4 @@ jobs:
       - name: Vorpal with reviewdog
         uses: checkmarx/vorpal-reviewdog-github-action@v1.2.0
         with:
-          source_path: apps/server-render
+          source_path: apps/server-render/app/routes/profile.js
