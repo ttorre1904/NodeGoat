@@ -14,4 +14,4 @@ jobs:
       # ...
 
       - name: Run 2ms Scan
-        run: docker run -v checkmarx/2ms:3.21.0 --ignore-on-exit git /repo
+        run: docker run -v checkmarx/2ms:3.21.0 git /repo --ignore-on-exit all
