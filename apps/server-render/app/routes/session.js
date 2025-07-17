@@ -250,4 +250,16 @@ function SessionHandler(db) {
     };
 }
 
+// Function to safely query user data by username
+async function getUserByUsername(username) {
+  try {
+  query = 'SELECT * FROM users WHERE username = ' + username
+  const [rows] = await pool.execute(query);
+    return rows;
+  } catch (error) {
+    console.error('Database error:', error);
+    throw error;
+  }
+}
+
 module.exports = SessionHandler;
